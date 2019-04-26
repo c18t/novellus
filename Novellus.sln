@@ -4,16 +4,31 @@ Microsoft Visual Studio Solution File, Format Version 12.00
 VisualStudioVersion = 16.0.28803.202
 MinimumVisualStudioVersion = 10.0.40219.1
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Novellus.UWP", "Novellus.UWP\Novellus.UWP.csproj", "{CD6C3173-3B12-4249-B7BD-C1E8DD0B96F5}"
+	ProjectSection(ProjectDependencies) = postProject
+		{BB704FFC-C246-44F8-AE3C-D6232723372B} = {BB704FFC-C246-44F8-AE3C-D6232723372B}
+	EndProjectSection
 EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Novellus.Android", "Novellus.Android\Novellus.Android.csproj", "{702B49E9-6546-4387-B987-2C28515B9858}"
+	ProjectSection(ProjectDependencies) = postProject
+		{BB704FFC-C246-44F8-AE3C-D6232723372B} = {BB704FFC-C246-44F8-AE3C-D6232723372B}
+	EndProjectSection
 EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Novellus.iOS", "Novellus.iOS\Novellus.iOS.csproj", "{53079E20-035C-4E4B-B63C-8065DCE33E5E}"
+	ProjectSection(ProjectDependencies) = postProject
+		{BB704FFC-C246-44F8-AE3C-D6232723372B} = {BB704FFC-C246-44F8-AE3C-D6232723372B}
+	EndProjectSection
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Novellus.Form", "Novellus\Novellus.Form.csproj", "{46640EFC-5D42-4794-AF9B-9F33B99EEC17}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Novellus.Form", "Novellus\Novellus.Form.csproj", "{46640EFC-5D42-4794-AF9B-9F33B99EEC17}"
+	ProjectSection(ProjectDependencies) = postProject
+		{BB704FFC-C246-44F8-AE3C-D6232723372B} = {BB704FFC-C246-44F8-AE3C-D6232723372B}
+	EndProjectSection
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Novellus.Common", "Novellus.Common\Novellus.Common.csproj", "{BB704FFC-C246-44F8-AE3C-D6232723372B}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Novellus.Common", "Novellus.Common\Novellus.Common.csproj", "{BB704FFC-C246-44F8-AE3C-D6232723372B}"
 EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Novellus.Mac", "Novellus.Mac\Novellus.Mac.csproj", "{5158B71C-1F6A-4889-9175-EBA00B209694}"
+	ProjectSection(ProjectDependencies) = postProject
+		{BB704FFC-C246-44F8-AE3C-D6232723372B} = {BB704FFC-C246-44F8-AE3C-D6232723372B}
+	EndProjectSection
 EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
