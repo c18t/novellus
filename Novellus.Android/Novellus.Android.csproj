@@ -101,7 +101,7 @@
     <Folder Include="Resources\drawable-xxxhdpi\" />
   </ItemGroup>
   <ItemGroup>
-    <ProjectReference Include="..\Novellus\Novellus.Form.csproj">
+    <ProjectReference Include="..\Novellus.Form\Novellus.Form.csproj">
       <Project>{46640EFC-5D42-4794-AF9B-9F33B99EEC17}</Project>
       <Name>Novellus.Form</Name>
     </ProjectReference>

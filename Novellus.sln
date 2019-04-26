@@ -18,7 +18,7 @@ Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Novellus.iOS", "Novellus.iO
 		{BB704FFC-C246-44F8-AE3C-D6232723372B} = {BB704FFC-C246-44F8-AE3C-D6232723372B}
 	EndProjectSection
 EndProject
-Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Novellus.Form", "Novellus\Novellus.Form.csproj", "{46640EFC-5D42-4794-AF9B-9F33B99EEC17}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Novellus.Form", "Novellus.Form\Novellus.Form.csproj", "{46640EFC-5D42-4794-AF9B-9F33B99EEC17}"
 	ProjectSection(ProjectDependencies) = postProject
 		{BB704FFC-C246-44F8-AE3C-D6232723372B} = {BB704FFC-C246-44F8-AE3C-D6232723372B}
 	EndProjectSection
