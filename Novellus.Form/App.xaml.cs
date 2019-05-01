@@ -13,7 +13,7 @@ namespace Novellus
         {
             InitializeComponent();
 
-            DependencyService.Register<MockDataStore>();
+            //DependencyService.Register<MockDataStore>();
             MainPage = new MainPage();
         }
 

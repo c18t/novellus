@@ -3,6 +3,8 @@
   <PropertyGroup>
     <TargetFramework>netstandard2.0</TargetFramework>
     <ProduceAssemblyReference>true</ProduceAssemblyReference>
+    <RootNamespace>Novellus</RootNamespace>
+    <ApplicationIcon />
   </PropertyGroup>
 
   <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Debug|AnyCPU'">
@@ -37,5 +39,15 @@
     <None Update="Views\NewItemPage.xaml">
       <Generator>MSBuild:Compile</Generator>
     </None>
+  </ItemGroup>
+
+  <ItemGroup>
+    <EmbeddedResource Update="Views\MainPage.xaml">
+      <Generator>MSBuild:UpdateDesignTimeXaml</Generator>
+    </EmbeddedResource>
+  </ItemGroup>
+
+  <ItemGroup>
+    <Folder Include="Models\" />
   </ItemGroup>
 </Project>
