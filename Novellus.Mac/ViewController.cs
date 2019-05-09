@@ -16,6 +16,7 @@ namespace Novellus.Mac
             base.ViewDidLoad();
 
             // Do any additional setup after loading the view.
+            webView.LoadRequest(new NSUrlRequest(new NSUrl("https://org-chimata-novellus.firebaseapp.com/")));
         }
 
         public override NSObject RepresentedObject
