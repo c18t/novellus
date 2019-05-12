@@ -16,7 +16,6 @@ namespace Novellus.Views
         public MainPage()
         {
             InitializeComponent();
-            this.webView.Source = "https://org-chimata-novellus.firebaseapp.com/";
         }
     }
 }
