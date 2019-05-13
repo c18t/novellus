@@ -46,6 +46,9 @@
         </uap:DefaultTile>
         <uap:SplashScreen Image="Assets\SplashScreen.png" />
       </uap:VisualElements>
+      <uap:ApplicationContentUriRules>
+        <uap:Rule Type="include" Match="https://org-chimata-novellus.firebaseapp.com/"/>
+      </uap:ApplicationContentUriRules>
     </Application>
   </Applications>
 
