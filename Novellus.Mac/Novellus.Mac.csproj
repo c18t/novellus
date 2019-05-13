@@ -65,6 +65,9 @@
     <Reference Include="Xamarin.Forms.Xaml">
       <HintPath>..\packages\Xamarin.Forms.3.6.0.344457\lib\Xamarin.Mac\Xamarin.Forms.Xaml.dll</HintPath>
     </Reference>
+    <Reference Include="Newtonsoft.Json">
+      <HintPath>..\packages\Newtonsoft.Json.12.0.2\lib\netstandard2.0\Newtonsoft.Json.dll</HintPath>
+    </Reference>
   </ItemGroup>
   <ItemGroup>
     <ImageAsset Include="Assets.xcassets\AppIcon.appiconset\Contents.json" />
@@ -91,15 +94,13 @@
   <ItemGroup>
     <Compile Include="Main.cs" />
     <Compile Include="AppDelegate.cs" />
+    <Compile Include="HybridWebView.cs" />
+    <Compile Include="HybridWebViewNavigationDelegate.cs" />
   </ItemGroup>
   <ItemGroup>
     <ProjectReference Include="..\Novellus.Form\Novellus.Form.csproj">
       <Project>{46640EFC-5D42-4794-AF9B-9F33B99EEC17}</Project>
       <Name>Novellus.Form</Name>
-    </ProjectReference>
-    <ProjectReference Include="..\Novellus.Common\Novellus.Common.csproj">
-      <Project>{BB704FFC-C246-44F8-AE3C-D6232723372B}</Project>
-      <Name>Novellus.Common</Name>
     </ProjectReference>
   </ItemGroup>
   <Import Project="$(MSBuildExtensionsPath)\Xamarin\Mac\Xamarin.Mac.CSharp.targets" />

@@ -17,5 +17,14 @@ namespace Novellus.Views
         {
             InitializeComponent();
         }
+
+        protected override void OnAppearing()
+        {
+            this.hybridWebView.RegisterAction("invokeCSharpAction", data => {
+                DisplayAlert("Alert", "Hello " + data, "OK");
+                string js = "document.getElementById('book').innerHTML='C#!!!';";
+                this.hybridWebView.InjectJavascriptAsync(js).ConfigureAwait(false);
+            });
+        }
     }
 }
