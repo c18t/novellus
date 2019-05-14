@@ -74,8 +74,9 @@ namespace Novellus
             var action = JsonConvert.DeserializeObject<ActionEvent>(data);
 
             // Decode
-            byte[] dBytes = Convert.FromBase64String(action.Data);
-            action.Data = Encoding.UTF8.GetString(dBytes, 0, dBytes.Length);
+            //byte[] dBytes = Convert.FromBase64String(action.Data);
+            //action.Data = Encoding.UTF8.GetString(dBytes, 0, dBytes.Length);
+            action.Data = System.Uri.UnescapeDataString(action.Data);
 
             if (RegisteredCallbacks.ContainsKey(action.Action)) {
                 RegisteredCallbacks[action.Action]?.Invoke(action.Data);
@@ -103,7 +104,7 @@ namespace Novellus
 
         public static string GenerateFunctionScript(string name)
         {
-            return $"function {name}(str){{csharp(\"{{'action':'{name}','data':'\"+window.btoa(str)+\"'}}\");}}";
+            return $"function {name}(str){{csharp(\"{{'action':'{name}','data':'\"+encodeURIComponent(str)+\"'}}\");}}";
         }
 
         public void Dispose()

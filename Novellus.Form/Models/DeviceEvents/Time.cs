@@ -11,6 +11,7 @@ namespace Novellus.Models.DeviceEvents
     [JsonObject("timeResponse")]
     public class TimeResponse : Response
     {
-        public DateTime time { get; set; }
+        [JsonProperty("time")]
+        public DateTime Time { get; set; }
     }
 }

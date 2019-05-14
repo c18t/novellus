@@ -6,7 +6,8 @@ namespace Novellus.Models.DeviceEvents
     [JsonObject("alertRequest")]
     public class AlertRequest : Request
     {
-        public string message { get; set; }
+        [JsonProperty("message")]
+        public string Message { get; set; }
     }
 
     [JsonObject("alertResponse")]
