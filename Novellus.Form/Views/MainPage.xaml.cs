@@ -44,8 +44,7 @@ namespace Novellus.Views
                 string content = string.Empty;
                 using (var client = new HttpClient())
                 {
-                    var result = await client.GetAsync(req.Url);
-                    content = await result.Content.ReadAsStringAsync();
+                    content = Convert.ToBase64String(await client.GetByteArrayAsync(req.Url));
                 }
                 string res = JsonConvert.SerializeObject(new FetchResponse() { UUID = req.UUID, Content = content });
                 var js = string.Format("window.SetDeviceResult('{0}', '{1}')", req.UUID, res);

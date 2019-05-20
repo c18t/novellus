@@ -43,7 +43,7 @@ namespace Novellus.Mac
             }
             if (e.NewElement != null)
             {
-                //WKWebsiteDataStore.DefaultDataStore.RemoveDataOfTypes(WKWebsiteDataStore.AllWebsiteDataTypes, new NSDate(), () => { });
+                WKWebsiteDataStore.DefaultDataStore.RemoveDataOfTypes(WKWebsiteDataStore.AllWebsiteDataTypes, new NSDate(), () => { });
                 var hybridWebView = e.NewElement as HybridWebView;
                 hybridWebView.OnJavascriptInjectionRequest += OnJavascriptInjectionRequest;
                 Control.LoadRequest(new NSUrlRequest(new NSUrl(Element.Uri),
