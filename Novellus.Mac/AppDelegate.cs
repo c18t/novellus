@@ -1,33 +1,35 @@
-﻿using AppKit;
-using Foundation;
-using Xamarin.Forms;
-using Xamarin.Forms.Platform.MacOS;
-
-namespace Novellus.Mac
+﻿namespace Novellus.Mac
 {
+    using AppKit;
+    using Foundation;
+    using Xamarin.Forms;
+    using Xamarin.Forms.Platform.MacOS;
+
     [Register("AppDelegate")]
     public class AppDelegate : FormsApplicationDelegate
     {
-        NSWindow _window;
-        public override NSWindow MainWindow
-        {
-            get { return _window; }
-        }
+        private NSWindow window;
+
         public AppDelegate()
         {
             var style = NSWindowStyle.Closable | NSWindowStyle.Resizable | NSWindowStyle.Titled;
 
             var rect = new CoreGraphics.CGRect(200, 1000, 1024, 768);
-            _window = new NSWindow(rect, style, NSBackingStore.Buffered, false);
-            _window.Title = "Xamarin.Forms on Mac!";
-            _window.TitleVisibility = NSWindowTitleVisibility.Hidden;
+            this.window = new NSWindow(rect, style, NSBackingStore.Buffered, false);
+            this.window.Title = "Xamarin.Forms on Mac!";
+            this.window.TitleVisibility = NSWindowTitleVisibility.Hidden;
+        }
+
+        public override NSWindow MainWindow
+        {
+            get { return this.window; }
         }
 
         public override void DidFinishLaunching(NSNotification notification)
         {
             // Insert code here to initialize your application
             Forms.Init();
-            LoadApplication(new App());
+            this.LoadApplication(new App());
             base.DidFinishLaunching(notification);
         }
 

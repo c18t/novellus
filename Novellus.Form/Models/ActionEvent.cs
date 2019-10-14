@@ -1,8 +1,7 @@
-﻿using System;
-using Newtonsoft.Json;
-
-namespace Novellus.Models
+﻿namespace Novellus.Models
 {
+    using Newtonsoft.Json;
+
     [JsonObject]
     public class ActionEvent
     {

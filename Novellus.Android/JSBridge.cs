@@ -1,25 +1,23 @@
-﻿using System;
-using Android.Webkit;
-using Java.Interop;
-
-namespace Novellus.Droid
+﻿namespace Novellus.Droid
 {
+    using System;
+    using Android.Webkit;
+    using Java.Interop;
+
     public class JSBridge : Java.Lang.Object
     {
-        readonly WeakReference<HybridWebViewRenderer> hybridWebViewRenderer;
+        private readonly WeakReference<HybridWebViewRenderer> hybridWebViewRenderer;
 
         public JSBridge(HybridWebViewRenderer hybridRenderer)
         {
-            hybridWebViewRenderer = new WeakReference<HybridWebViewRenderer>(hybridRenderer);
+            this.hybridWebViewRenderer = new WeakReference<HybridWebViewRenderer>(hybridRenderer);
         }
 
         [JavascriptInterface]
         [Export("invokeAction")]
         public void InvokeAction(string data)
         {
-            HybridWebViewRenderer hybridRenderer;
-
-            if (hybridWebViewRenderer != null && hybridWebViewRenderer.TryGetTarget(out hybridRenderer))
+            if (!(this.hybridWebViewRenderer is null) && this.hybridWebViewRenderer.TryGetTarget(out HybridWebViewRenderer hybridRenderer))
             {
                 hybridRenderer.Element.HandleScriptReceived(data);
             }

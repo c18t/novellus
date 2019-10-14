@@ -1,29 +1,36 @@
-﻿using System;
-using Foundation;
-using WebKit;
-
-namespace Novellus.iOS
+﻿namespace Novellus.iOS
 {
+    using System;
+    using Foundation;
+    using WebKit;
+
     public class HybridWebViewNavigationDelegate : WKNavigationDelegate
     {
-        readonly WeakReference<HybridWebViewRenderer> Reference;
+        private readonly WeakReference<HybridWebViewRenderer> reference;
 
         public HybridWebViewNavigationDelegate(HybridWebViewRenderer renderer)
         {
-            Reference = new WeakReference<HybridWebViewRenderer>(renderer);
+            this.reference = new WeakReference<HybridWebViewRenderer>(renderer);
         }
 
         [Export("webView:didFinishNavigation:")]
         public async override void DidFinishNavigation(WKWebView webView, WKNavigation navigation)
         {
-            if (Reference == null || !Reference.TryGetTarget(out HybridWebViewRenderer renderer)) return;
-            if (renderer.Element == null) return;
+            if (this.reference is null || !this.reference.TryGetTarget(out HybridWebViewRenderer renderer))
+            {
+                return;
+            }
+
+            if (renderer.Element is null)
+            {
+                return;
+            }
 
             await renderer.OnJavascriptInjectionRequest(HybridWebView.InjectedFunction);
 
-            foreach (var function in renderer.Element.RegisteredCallbacks)
+            foreach (string actionName in renderer.Element.GetRegisteredActionNames())
             {
-                await renderer.OnJavascriptInjectionRequest(HybridWebView.GenerateFunctionScript(function.Key));
+                await renderer.OnJavascriptInjectionRequest(HybridWebView.GenerateFunctionScript(actionName));
             }
         }
     }

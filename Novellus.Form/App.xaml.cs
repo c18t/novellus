@@ -1,20 +1,18 @@
-﻿using System;
-using Xamarin.Forms;
-using Xamarin.Forms.Xaml;
-using Novellus.Services;
-using Novellus.Views;
-
-namespace Novellus
+﻿namespace Novellus
 {
+    using System.Net.Http;
+    using Novellus.Views;
+    using Xamarin.Forms;
+
     public partial class App : Application
     {
-
         public App()
         {
-            InitializeComponent();
+            DependencyService.Register<HttpClient>();
 
-            //DependencyService.Register<MockDataStore>();
-            MainPage = new MainPage();
+            this.InitializeComponent();
+
+            this.MainPage = new MainPage();
         }
 
         protected override void OnStart()

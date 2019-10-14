@@ -1,104 +1,113 @@
-﻿using System;
-using System.Globalization;
-using System.Text.RegularExpressions;
-using System.Threading.Tasks;
-using Android.Content;
-using Novellus;
-using Novellus.Droid;
-using Xamarin.Forms;
-using Xamarin.Forms.Platform.Android;
+﻿[assembly: Xamarin.Forms.ExportRenderer(typeof(Novellus.HybridWebView), typeof(Novellus.Droid.HybridWebViewRenderer))]
 
-[assembly: ExportRenderer(typeof(HybridWebView), typeof(HybridWebViewRenderer))]
 namespace Novellus.Droid
 {
+    using System.Globalization;
+    using System.Text.RegularExpressions;
+    using System.Threading.Tasks;
+    using Android.Content;
+    using Xamarin.Forms;
+    using Xamarin.Forms.Platform.Android;
+
     public class HybridWebViewRenderer : ViewRenderer<HybridWebView, Android.Webkit.WebView>
     {
-        JavascriptValueCallback _callback;
-        Context _context;
+        private JavascriptValueCallback callback;
+        private Context context;
 
         public HybridWebViewRenderer(Context context) : base(context)
         {
-            _context = context;
+            this.context = context;
+        }
+
+        internal async Task<string> OnJavascriptInjectionRequest(string js)
+        {
+            if (this.Element is null || this.Control is null)
+            {
+                return string.Empty;
+            }
+
+            // fire!
+            this.callback.Reset();
+
+            string response = string.Empty;
+            Device.BeginInvokeOnMainThread(() => this.Control.EvaluateJavascript(js, this.callback));
+
+            // wait!
+            await Task.Run(() =>
+            {
+                while (this.callback.Value is null)
+                {
+                    // continue
+                }
+
+                // Get the string and strip off the quotes
+                if (this.callback.Value is Java.Lang.String)
+                {
+                    // Unescape that damn Unicode Java bull.
+                    response = Regex.Replace(this.callback.Value.ToString(), @"\\[Uu]([0-9A-Fa-f]{4})", m => char.ToString((char)ushort.Parse(m.Groups[1].Value, NumberStyles.AllowHexSpecifier)));
+                    response = Regex.Unescape(response);
+
+                    if (response.Equals("\"null\""))
+                    {
+                        response = null;
+                    }
+                    else if (response.StartsWith("\"") && response.EndsWith("\""))
+                    {
+                        response = response.Substring(1, response.Length - 2);
+                    }
+                }
+            });
+
+            // return
+            return response;
         }
 
         protected override void OnElementChanged(ElementChangedEventArgs<HybridWebView> e)
         {
             base.OnElementChanged(e);
 
-            if (Control == null)
+            if (this.Control is null)
             {
-                var webView = new Android.Webkit.WebView(_context);
-                _callback = new JavascriptValueCallback(this);
-                
+                var webView = new Android.Webkit.WebView(this.context);
+                this.callback = new JavascriptValueCallback(this);
+
                 webView.Settings.JavaScriptEnabled = true;
                 webView.AddJavascriptInterface(new JSBridge(this), "jsBridge");
                 webView.SetWebViewClient(new JavascriptWebViewClient(this));
 
-                HybridWebView.CallbackAdded += OnCallbackAdded;
+                HybridWebView.CallbackAdded += this.OnCallbackAdded;
 
-                SetNativeControl(webView);
+                this.SetNativeControl(webView);
             }
-            if (e.OldElement != null)
+
+            if (!(e.OldElement is null))
             {
-                Control.RemoveJavascriptInterface("jsBridge");
+                this.Control.RemoveJavascriptInterface("jsBridge");
                 var hybridWebView = e.OldElement as HybridWebView;
                 hybridWebView.RemoveAllActions();
-                hybridWebView.OnJavascriptInjectionRequest -= OnJavascriptInjectionRequest;
+                hybridWebView.OnJavascriptInjectionRequest -= this.OnJavascriptInjectionRequest;
             }
-            if (e.NewElement != null)
+
+            if (!(e.NewElement is null))
             {
-                Control.AddJavascriptInterface(new JSBridge(this), "jsBridge");
+                this.Control.AddJavascriptInterface(new JSBridge(this), "jsBridge");
                 var hybridWebView = e.NewElement as HybridWebView;
-                hybridWebView.OnJavascriptInjectionRequest += OnJavascriptInjectionRequest;
-                Control.LoadUrl(Element.Uri);
+                hybridWebView.OnJavascriptInjectionRequest += this.OnJavascriptInjectionRequest;
+                this.Control.LoadUrl(Element.Uri);
             }
         }
 
-        async void OnCallbackAdded(object sender, string e)
+        private async void OnCallbackAdded(object sender, string e)
         {
-            if (Element == null || string.IsNullOrWhiteSpace(e)) return;
-
-            if (sender != null)
+            if (this.Element is null || string.IsNullOrWhiteSpace(e))
             {
-                await OnJavascriptInjectionRequest(HybridWebView.GenerateFunctionScript(e));
+                return;
             }
-        }
 
-        internal async Task<string> OnJavascriptInjectionRequest(string js)
-        {
-            if (Element == null || Control == null) return string.Empty;
-
-            // fire!
-            _callback.Reset();
-
-            var response = string.Empty;
-            Device.BeginInvokeOnMainThread(() => Control.EvaluateJavascript(js, _callback));
-
-            // wait!
-            await Task.Run(() =>
+            if (!(sender is null))
             {
-                while (_callback.Value == null) { }
-
-                // Get the string and strip off the quotes
-                if (_callback.Value is Java.Lang.String)
-                {
-                    // Unescape that damn Unicode Java bull.
-                    response = Regex.Replace(_callback.Value.ToString(), @"\\[Uu]([0-9A-Fa-f]{4})", m => char.ToString((char)ushort.Parse(m.Groups[1].Value, NumberStyles.AllowHexSpecifier)));
-                    response = Regex.Unescape(response);
-
-                    if (response.Equals("\"null\""))
-                        response = null;
-
-                    else if (response.StartsWith("\"") && response.EndsWith("\""))
-                    {
-                        response = response.Substring(1, response.Length - 2);
-                    }
-                }
-
-            });
-
-            // return
-            return response;
+                await this.OnJavascriptInjectionRequest(HybridWebView.GenerateFunctionScript(e));
+            }
         }
     }
 }

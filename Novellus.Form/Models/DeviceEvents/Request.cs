@@ -1,7 +1,7 @@
-﻿using Newtonsoft.Json;
-
-namespace Novellus.Models.DeviceEvents
+﻿namespace Novellus.Models.DeviceEvents
 {
+    using Newtonsoft.Json;
+
     [JsonObject("request")]
     public class Request
     {

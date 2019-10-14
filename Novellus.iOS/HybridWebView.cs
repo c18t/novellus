@@ -1,103 +1,99 @@
-﻿using System;
-using System.IO;
-using System.Threading.Tasks;
-using Foundation;
-using Novellus;
-using Novellus.iOS;
-using WebKit;
-using Xamarin.Forms;
-using Xamarin.Forms.Platform.iOS;
+﻿[assembly: Xamarin.Forms.ExportRenderer(typeof(Novellus.HybridWebView), typeof(Novellus.iOS.HybridWebViewRenderer))]
 
-[assembly: ExportRenderer(typeof(HybridWebView), typeof(HybridWebViewRenderer))]
 namespace Novellus.iOS
 {
+    using System;
+    using System.Threading.Tasks;
+    using Foundation;
+    using Novellus;
+    using WebKit;
+    using Xamarin.Forms.Platform.iOS;
+
     public class HybridWebViewRenderer : ViewRenderer<HybridWebView, WKWebView>, IWKScriptMessageHandler
     {
-        WKUserContentController userController;
-        HybridWebViewNavigationDelegate navigationDelegate;
-        WKWebViewConfiguration configuration;
-
-        protected override void OnElementChanged(ElementChangedEventArgs<HybridWebView> e)
-        {
-            base.OnElementChanged(e);
-
-            if (Control == null)
-            {
-                userController = new WKUserContentController();
-                userController.AddScriptMessageHandler(this, "invokeAction");
-                navigationDelegate = new HybridWebViewNavigationDelegate(this);
-                configuration = new WKWebViewConfiguration { UserContentController = userController };
-
-                var webView = new WKWebView(Frame, configuration) { NavigationDelegate = navigationDelegate };
-
-                HybridWebView.CallbackAdded += OnCallbackAdded;
-                SetNativeControl(webView);
-            }
-            if (e.OldElement != null)
-            {
-                userController.RemoveAllUserScripts();
-                userController.RemoveScriptMessageHandler("invokeAction");
-                var hybridWebView = e.OldElement as HybridWebView;
-                hybridWebView.OnJavascriptInjectionRequest -= OnJavascriptInjectionRequest;
-                hybridWebView.RemoveAllActions();
-            }
-            if (e.NewElement != null)
-            {
-                var hybridWebView = e.NewElement as HybridWebView;
-                hybridWebView.OnJavascriptInjectionRequest += OnJavascriptInjectionRequest;
-                Control.LoadRequest(new NSUrlRequest(new NSUrl(Element.Uri),
-                                                     NSUrlRequestCachePolicy.ReloadIgnoringCacheData, 10));
-            }
-        }
-
-        async void OnCallbackAdded(object sender, string e)
-        {
-            if (Element == null || string.IsNullOrWhiteSpace(e)) return;
-
-            if (sender != null)
-            {
-                await OnJavascriptInjectionRequest(HybridWebView.GenerateFunctionScript(e));
-            }
-        }
+        private WKUserContentController userController;
+        private HybridWebViewNavigationDelegate navigationDelegate;
+        private WKWebViewConfiguration configuration;
 
         public async Task<string> OnJavascriptInjectionRequest(string js)
         {
-            if (Control == null || Element == null) return string.Empty;
+            if (this.Control is null || this.Element is null)
+            {
+                return string.Empty;
+            }
 
-            var response = string.Empty;
-
+            string response = string.Empty;
             try
             {
-                var obj = await Control.EvaluateJavaScriptAsync(js).ConfigureAwait(true);
-                if (obj != null)
+                NSObject obj = await this.Control.EvaluateJavaScriptAsync(js).ConfigureAwait(true);
+                if (!(obj is null))
                 {
                     response = obj.ToString();
                 }
-
-                //var script = new WKUserScript(new NSString(js), WKUserScriptInjectionTime.AtDocumentStart, false);
-                //var hasScript = false;
-                //foreach (var item in userController.UserScripts)
-                //{
-                //    if (item.Source == script.Source)
-                //    {
-                //        hasScript = true; break;
-                //    }
-                //}
-                //if (!hasScript)
-                //{
-                //    userController.AddUserScript(script);
-                //    configuration.UserContentController = userController;
-                //}
+            }
+            catch
+            {
+                // do nothing
             }
 
-            catch (Exception) { /* The Webview might not be ready... */ }
             return response;
         }
 
         public void DidReceiveScriptMessage(WKUserContentController userContentController, WKScriptMessage message)
         {
-            if (Element == null || message == null || message.Body == null) return;
-            Element.HandleScriptReceived(message.Body.ToString());
+            if (this.Element is null || message is null || message.Body is null)
+            {
+                return;
+            }
+
+            this.Element.HandleScriptReceived(message.Body.ToString());
+        }
+
+        protected override void OnElementChanged(ElementChangedEventArgs<HybridWebView> e)
+        {
+            base.OnElementChanged(e);
+
+            if (this.Control is null)
+            {
+                this.userController = new WKUserContentController();
+                this.userController.AddScriptMessageHandler(this, "invokeAction");
+                this.navigationDelegate = new HybridWebViewNavigationDelegate(this);
+                this.configuration = new WKWebViewConfiguration { UserContentController = this.userController };
+
+                var webView = new WKWebView(this.Frame, this.configuration) { NavigationDelegate = this.navigationDelegate };
+
+                HybridWebView.CallbackAdded += this.OnCallbackAdded;
+                this.SetNativeControl(webView);
+            }
+
+            if (!(e.OldElement is null))
+            {
+                this.userController.RemoveAllUserScripts();
+                this.userController.RemoveScriptMessageHandler("invokeAction");
+                var hybridWebView = e.OldElement as HybridWebView;
+                hybridWebView.OnJavascriptInjectionRequest -= this.OnJavascriptInjectionRequest;
+                hybridWebView.RemoveAllActions();
+            }
+
+            if (!(e.NewElement is null))
+            {
+                var hybridWebView = e.NewElement as HybridWebView;
+                hybridWebView.OnJavascriptInjectionRequest += this.OnJavascriptInjectionRequest;
+                this.Control.LoadRequest(new NSUrlRequest(new NSUrl(this.Element.Uri), NSUrlRequestCachePolicy.ReloadIgnoringCacheData, 10));
+            }
+        }
+
+        private async void OnCallbackAdded(object sender, string e)
+        {
+            if (this.Element is null || string.IsNullOrWhiteSpace(e))
+            {
+                return;
+            }
+
+            if (!(sender is null))
+            {
+                await this.OnJavascriptInjectionRequest(HybridWebView.GenerateFunctionScript(e));
+            }
         }
     }
 }

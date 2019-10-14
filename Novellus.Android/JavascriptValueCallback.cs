@@ -1,29 +1,32 @@
-﻿using System;
-using Android.Webkit;
-
-namespace Novellus.Droid
+﻿namespace Novellus.Droid
 {
+    using System;
+    using Android.Webkit;
+
     public class JavascriptValueCallback : Java.Lang.Object, IValueCallback
     {
-
-        public Java.Lang.Object Value { get; private set; }
-
-        readonly WeakReference<HybridWebViewRenderer> Reference;
+        private readonly WeakReference<HybridWebViewRenderer> reference;
 
         public JavascriptValueCallback(HybridWebViewRenderer renderer)
         {
-            Reference = new WeakReference<HybridWebViewRenderer>(renderer);
+            this.reference = new WeakReference<HybridWebViewRenderer>(renderer);
         }
+
+        public Java.Lang.Object Value { get; private set; }
 
         public void OnReceiveValue(Java.Lang.Object value)
         {
-            if (Reference == null || !Reference.TryGetTarget(out HybridWebViewRenderer renderer)) return;
-            Value = value;
+            if (this.reference is null || !this.reference.TryGetTarget(out HybridWebViewRenderer renderer))
+            {
+                return;
+            }
+
+            this.Value = value;
         }
 
         public void Reset()
         {
-            Value = null;
+            this.Value = null;
         }
     }
 }

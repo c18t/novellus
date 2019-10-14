@@ -1,80 +1,96 @@
-﻿using Novellus;
-using Novellus.UWP;
-using System;
-using System.Threading.Tasks;
-using Windows.UI.Xaml.Controls;
-using Windows.Web.Http;
-using Xamarin.Forms.Platform.UWP;
+﻿[assembly: Xamarin.Forms.Platform.UWP.ExportRenderer(typeof(Novellus.HybridWebView), typeof(Novellus.UWP.HybridWebViewRenderer))]
 
-[assembly: ExportRenderer(typeof(HybridWebView), typeof(HybridWebViewRenderer))]
 namespace Novellus.UWP
 {
+    using System;
+    using System.Threading.Tasks;
+    using Novellus;
+    using Windows.UI.Xaml.Controls;
+    using Windows.Web.Http;
+    using Xamarin.Forms.Platform.UWP;
+
     public class HybridWebViewRenderer : ViewRenderer<HybridWebView, WebView>
     {
         protected override async void OnElementChanged(ElementChangedEventArgs<HybridWebView> e)
         {
             base.OnElementChanged(e);
 
-            if (Control == null)
+            if (this.Control is null)
             {
                 var control = new WebView();
 
-                SetNativeControl(control);
+                this.SetNativeControl(control);
 
-                HybridWebView.CallbackAdded += OnCallbackAdded;
-                Control.DOMContentLoaded += OnDOMContentLoaded;
-                Control.ScriptNotify += OnScriptNotify;
+                HybridWebView.CallbackAdded += this.OnCallbackAdded;
+                this.Control.DOMContentLoaded += this.OnDOMContentLoaded;
+                this.Control.ScriptNotify += this.OnScriptNotify;
             }
-            if (e.OldElement != null)
+
+            if (!(e.OldElement is null))
             {
                 var hybridWebView = e.OldElement as HybridWebView;
-                hybridWebView.OnJavascriptInjectionRequest -= OnJavascriptInjectionRequestAsync;
+                hybridWebView.OnJavascriptInjectionRequest -= this.OnJavascriptInjectionRequestAsync;
             }
-            if (e.NewElement != null)
+
+            if (!(e.NewElement is null))
             {
                 var hybridWebView = e.NewElement as HybridWebView;
-                hybridWebView.OnJavascriptInjectionRequest += OnJavascriptInjectionRequestAsync;
+                hybridWebView.OnJavascriptInjectionRequest += this.OnJavascriptInjectionRequestAsync;
 
                 // Navigate
                 await WebView.ClearTemporaryWebDataAsync();
-                Control.NavigateWithHttpRequestMessage(new HttpRequestMessage(HttpMethod.Get, new Uri(hybridWebView.Uri)));
+                this.Control.NavigateWithHttpRequestMessage(new HttpRequestMessage(HttpMethod.Get, new Uri(hybridWebView.Uri)));
             }
         }
 
-        async void OnDOMContentLoaded(WebView sender, WebViewDOMContentLoadedEventArgs args)
+        private async void OnDOMContentLoaded(WebView sender, WebViewDOMContentLoadedEventArgs args)
         {
-            if (Element == null) return;
+            if (this.Element is null)
+            {
+                return;
+            }
 
             // Add Injection Function
-            await Control.InvokeScriptAsync("eval", new[] { HybridWebView.InjectedFunction });
+            await this.Control.InvokeScriptAsync("eval", new[] { HybridWebView.InjectedFunction });
 
             // Add Callbacks
-            foreach (var callback in Element.RegisteredCallbacks)
+            foreach (string actionName in this.Element.GetRegisteredActionNames())
             {
-                await Control.InvokeScriptAsync("eval", new[] { HybridWebView.GenerateFunctionScript(callback.Key) });
+                await this.Control.InvokeScriptAsync("eval", new[] { HybridWebView.GenerateFunctionScript(actionName) });
             }
         }
 
-        async void OnCallbackAdded(object sender, string e)
+        private async void OnCallbackAdded(object sender, string e)
         {
-            if (Element == null || string.IsNullOrWhiteSpace(e)) return;
-
-            if (sender != null)
+            if (this.Element is null || string.IsNullOrWhiteSpace(e))
             {
-                await OnJavascriptInjectionRequestAsync(HybridWebView.GenerateFunctionScript(e));
+                return;
+            }
+
+            if (!(sender is null))
+            {
+                await this.OnJavascriptInjectionRequestAsync(HybridWebView.GenerateFunctionScript(e));
             }
         }
 
-        void OnScriptNotify(object sender, NotifyEventArgs e)
+        private void OnScriptNotify(object sender, NotifyEventArgs e)
         {
-            if (Element == null) return;
-            Element.HandleScriptReceived(e.Value);
+            if (this.Element is null)
+            {
+                return;
+            }
+
+            this.Element.HandleScriptReceived(e.Value);
         }
 
-        async Task<string> OnJavascriptInjectionRequestAsync(string js)
+        private async Task<string> OnJavascriptInjectionRequestAsync(string js)
         {
-            if (Control == null) return string.Empty;
-            var result = await Control.InvokeScriptAsync("eval", new[] { js });
+            if (this.Control is null)
+            {
+                return string.Empty;
+            }
+
+            var result = await this.Control.InvokeScriptAsync("eval", new[] { js });
             return result;
         }
     }

@@ -1,10 +1,10 @@
-﻿using AppKit;
-
-namespace Novellus.Mac
+﻿namespace Novellus.Mac
 {
-    static class MainClass
+    using AppKit;
+
+    public static class MainClass
     {
-        static void Main(string[] args)
+        public static void Main(string[] args)
         {
             NSApplication.Init();
             NSApplication.SharedApplication.Delegate = new AppDelegate();

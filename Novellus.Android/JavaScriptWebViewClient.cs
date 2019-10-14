@@ -1,29 +1,37 @@
-﻿using System;
-using Android.Webkit;
-using Novellus;
-
-namespace Novellus.Droid
+﻿namespace Novellus.Droid
 {
+    using System;
+    using Android.Webkit;
+    using Novellus;
+
     public class JavascriptWebViewClient : WebViewClient
     {
-        readonly WeakReference<HybridWebViewRenderer> Reference;
+        private readonly WeakReference<HybridWebViewRenderer> reference;
 
         public JavascriptWebViewClient(HybridWebViewRenderer　renderer)
         {
-            Reference = new WeakReference<HybridWebViewRenderer>(renderer); ;
+            this.reference = new WeakReference<HybridWebViewRenderer>(renderer);
         }
 
         public async override void OnPageFinished(WebView view, string url)
         {
-            if (Reference == null || !Reference.TryGetTarget(out HybridWebViewRenderer renderer)) return;
-            if (renderer.Element == null) return;
+            if (this.reference is null || !this.reference.TryGetTarget(out HybridWebViewRenderer renderer))
+            {
+                return;
+            }
+
+            if (renderer.Element is null)
+            {
+                return;
+            }
 
             // Add Injection Function
             await renderer.OnJavascriptInjectionRequest(HybridWebView.InjectedFunction);
+
             // Add Callbacks
-            foreach (var callback in renderer.Element.RegisteredCallbacks)
+            foreach (string actionName in renderer.Element.GetRegisteredActionNames())
             {
-                await renderer.OnJavascriptInjectionRequest(HybridWebView.GenerateFunctionScript(callback.Key));
+                await renderer.OnJavascriptInjectionRequest(HybridWebView.GenerateFunctionScript(actionName));
             }
 
             base.OnPageFinished(view, url);

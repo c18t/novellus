@@ -1,8 +1,8 @@
-﻿using Newtonsoft.Json;
-using System;
-
-namespace Novellus.Models.DeviceEvents
+﻿namespace Novellus.Models.DeviceEvents
 {
+    using System;
+    using Newtonsoft.Json;
+
     [JsonObject("timeRequest")]
     public class TimeRequest : Request
     {

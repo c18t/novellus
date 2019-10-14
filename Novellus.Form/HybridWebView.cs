@@ -1,87 +1,27 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Text;
-using System.Threading.Tasks;
-using Newtonsoft.Json;
-using Novellus.Models;
-using Xamarin.Forms;
-
-namespace Novellus
+﻿namespace Novellus
 {
+    using System;
+    using System.Collections.Generic;
+    using System.Threading.Tasks;
+    using Newtonsoft.Json;
+    using Novellus.Models;
+    using Xamarin.Forms;
+
     public class HybridWebView : View, IDisposable
     {
-        public readonly Dictionary<string, Action<string>> RegisteredCallbacks = new Dictionary<string, Action<string>>();
+        public static readonly BindableProperty UriProperty = BindableProperty.Create(
+            propertyName: "Uri",
+            returnType: typeof(string),
+            declaringType: typeof(HybridWebView),
+            defaultValue: default(string));
+
+        private readonly Dictionary<string, Action<string>> registeredCallbacks = new Dictionary<string, Action<string>>();
 
         public delegate Task<string> JavascriptInjectionRequestDelegate(string js);
-        public event JavascriptInjectionRequestDelegate OnJavascriptInjectionRequest;
 
         public static event EventHandler<string> CallbackAdded;
 
-        public static readonly BindableProperty UriProperty = BindableProperty.Create(
-          propertyName: "Uri",
-          returnType: typeof(string),
-          declaringType: typeof(HybridWebView),
-          defaultValue: default(string));
-
-        public async Task<string> InjectJavascriptAsync(string js)
-        {
-            if (string.IsNullOrWhiteSpace(js)) return string.Empty;
-
-            if (OnJavascriptInjectionRequest != null)
-            {
-                return await OnJavascriptInjectionRequest.Invoke(js);
-            }
-
-            return string.Empty;
-        }
-
-        public string Uri
-        {
-            get { return (string)GetValue(UriProperty); }
-            set { SetValue(UriProperty, value); }
-        }
-
-        public void RegisterAction(string functionName, Action<string> action)
-        {
-            if (string.IsNullOrWhiteSpace(functionName)) return;
-
-            if (RegisteredCallbacks.ContainsKey(functionName))
-            {
-                RegisteredCallbacks.Remove(functionName);
-            }
-
-            RegisteredCallbacks.Add(functionName, action);
-            CallbackAdded?.Invoke(this, functionName);
-        }
-
-        public void RemoveAction(string functionName)
-        {
-            if (RegisteredCallbacks.ContainsKey(functionName))
-            {
-                RegisteredCallbacks.Remove(functionName);
-            }
-        }
-
-        public void RemoveAllActions()
-        {
-            RegisteredCallbacks.Clear();
-        }
-
-        public void HandleScriptReceived(string data)
-        {
-            if (string.IsNullOrWhiteSpace(data)) return;
-
-            var action = JsonConvert.DeserializeObject<ActionEvent>(data);
-
-            // Decode
-            //byte[] dBytes = Convert.FromBase64String(action.Data);
-            //action.Data = Encoding.UTF8.GetString(dBytes, 0, dBytes.Length);
-            action.Data = System.Uri.UnescapeDataString(action.Data);
-
-            if (RegisteredCallbacks.ContainsKey(action.Action)) {
-                RegisteredCallbacks[action.Action]?.Invoke(action.Data);
-            }
-        }
+        public event JavascriptInjectionRequestDelegate OnJavascriptInjectionRequest;
 
         public static string InjectedFunction
         {
@@ -102,15 +42,89 @@ namespace Novellus
             }
         }
 
+        public string Uri
+        {
+            get { return (string)this.GetValue(UriProperty); }
+            set { this.SetValue(UriProperty, value); }
+        }
+
         public static string GenerateFunctionScript(string name)
         {
             return $"function {name}(str){{csharp(\"{{'action':'{name}','data':'\"+encodeURIComponent(str)+\"'}}\");}}";
         }
 
+        public async Task<string> InjectJavascriptAsync(string js)
+        {
+            if (string.IsNullOrWhiteSpace(js))
+            { 
+                return string.Empty;
+            }
+
+            if (!(this.OnJavascriptInjectionRequest is null))
+            {
+                return await this.OnJavascriptInjectionRequest.Invoke(js);
+            }
+
+            return string.Empty;
+        }
+
+        public IEnumerable<string> GetRegisteredActionNames()
+        {
+            return this.registeredCallbacks.Keys;
+        }
+
+        public void RegisterAction(string functionName, Action<string> action)
+        {
+            if (string.IsNullOrWhiteSpace(functionName))
+            {
+                return;
+            }
+
+            if (this.registeredCallbacks.ContainsKey(functionName))
+            {
+                this.registeredCallbacks.Remove(functionName);
+            }
+
+            this.registeredCallbacks.Add(functionName, action);
+            CallbackAdded?.Invoke(this, functionName);
+        }
+
+        public void RemoveAction(string functionName)
+        {
+            if (this.registeredCallbacks.ContainsKey(functionName))
+            {
+                this.registeredCallbacks.Remove(functionName);
+            }
+        }
+
+        public void RemoveAllActions()
+        {
+            this.registeredCallbacks.Clear();
+        }
+
+        public void HandleScriptReceived(string data)
+        {
+            if (string.IsNullOrWhiteSpace(data))
+            {
+                return;
+            }
+
+            var action = JsonConvert.DeserializeObject<ActionEvent>(data);
+
+            if (!string.IsNullOrEmpty(action.Data))
+            {
+                action.Data = System.Uri.UnescapeDataString(action.Data);
+            }
+
+            if (this.registeredCallbacks.ContainsKey(action.Action))
+            {
+                this.registeredCallbacks[action.Action]?.Invoke(action.Data);
+            }
+        }
+
         public void Dispose()
         {
-            RegisteredCallbacks.Clear();
+            this.registeredCallbacks.Clear();
         }
     }
 }
-
