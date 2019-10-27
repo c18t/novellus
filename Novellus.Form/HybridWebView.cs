@@ -27,8 +27,7 @@
 
         private const string FunctionIdentifierRegex = @"^[A-Za-z0-9$_]+$";
 
-        private static readonly string[] reservedFunctionNames = new string[]
-        {
+        private static readonly string[] reservedFunctionNames = {
             InvokerFunctionName,
             EncoderFunctionName,
             AndroidJSBridgeName,

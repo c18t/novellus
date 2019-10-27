@@ -15,7 +15,7 @@
 
         public MainPage()
         {
-            this.httpClient = DependencyService.Resolve<HttpClient>();
+            this.httpClient = new HttpClient();
             this.InitializeComponent();
         }
 
@@ -48,7 +48,7 @@
                 {
                     FetchRequest req = JsonConvert.DeserializeObject<FetchRequest>(data);
 
-                    byte[] response = new byte[] { };
+                    byte[] response = { };
                     try
                     {
                         response = await this.httpClient.GetByteArrayAsync(req.Url);
