@@ -14,7 +14,7 @@
         }
 
         [JavascriptInterface]
-        [Export("invokeAction")]
+        [Export(Novellus.HybridWebView.JavaScriptMessageHandlerName)]
         public void InvokeAction(string data)
         {
             if (!(this.hybridWebViewRenderer is null) && this.hybridWebViewRenderer.TryGetTarget(out HybridWebViewRenderer hybridRenderer))

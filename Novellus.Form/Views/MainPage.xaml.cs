@@ -28,7 +28,7 @@
                     AlertRequest req = JsonConvert.DeserializeObject<AlertRequest>(data);
                     string res = JsonConvert.SerializeObject(new AlertResponse() { UUID = req.UUID });
                     string js = string.Format("window.SetDeviceResult('{0}', '{1}')", req.UUID, res);
-                    this.hybridWebView.InjectJavascriptAsync(js).ConfigureAwait(false);
+                    this.hybridWebView.InjectJavaScriptAsync(js).ConfigureAwait(false);
                     DisplayAlert("Alert", req.Message, "OK");
                 });
 
@@ -39,7 +39,7 @@
                     TimeRequest req = JsonConvert.DeserializeObject<TimeRequest>(data);
                     string res = JsonConvert.SerializeObject(new TimeResponse() { UUID = req.UUID, Time = DateTime.Now });
                     string js = string.Format("window.SetDeviceResult('{0}', '{1}')", req.UUID, res);
-                    this.hybridWebView.InjectJavascriptAsync(js).ConfigureAwait(false);
+                    this.hybridWebView.InjectJavaScriptAsync(js).ConfigureAwait(false);
                 });
 
             this.hybridWebView.RegisterAction(
@@ -61,7 +61,7 @@
                     string content = Convert.ToBase64String(response);
                     string res = JsonConvert.SerializeObject(new FetchResponse() { UUID = req.UUID, Content = content });
                     string js = string.Format("window.SetDeviceResult('{0}', '{1}')", req.UUID, res);
-                    await this.hybridWebView.InjectJavascriptAsync(js);
+                    await this.hybridWebView.InjectJavaScriptAsync(js);
                 });
         }
     }

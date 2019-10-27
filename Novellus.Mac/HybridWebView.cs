@@ -15,7 +15,7 @@ namespace Novellus.Mac
         private HybridWebViewNavigationDelegate navigationDelegate;
         private WKWebViewConfiguration configuration;
 
-        public async Task<string> OnJavascriptInjectionRequest(string js)
+        public async Task<string> OnJavaScriptInjectionRequest(string js)
         {
             if (this.Control is null || this.Element is null)
             {
@@ -56,7 +56,7 @@ namespace Novellus.Mac
             if (this.Control is null)
             {
                 this.userController = new WKUserContentController();
-                this.userController.AddScriptMessageHandler(this, "invokeAction");
+                this.userController.AddScriptMessageHandler(this, HybridWebView.JavaScriptMessageHandlerName);
                 this.navigationDelegate = new HybridWebViewNavigationDelegate(this);
                 this.configuration = new WKWebViewConfiguration { UserContentController = this.userController };
 
@@ -69,9 +69,9 @@ namespace Novellus.Mac
             if (!(e.OldElement is null))
             {
                 this.userController.RemoveAllUserScripts();
-                this.userController.RemoveScriptMessageHandler("invokeAction");
+                this.userController.RemoveScriptMessageHandler(HybridWebView.JavaScriptMessageHandlerName);
                 var hybridWebView = e.OldElement as HybridWebView;
-                hybridWebView.OnJavascriptInjectionRequest -= this.OnJavascriptInjectionRequest;
+                hybridWebView.OnJavaScriptInjectionRequest -= this.OnJavaScriptInjectionRequest;
                 hybridWebView.RemoveAllActions();
             }
 
@@ -82,7 +82,7 @@ namespace Novellus.Mac
                     new NSDate(),
                     () => { });
                 var hybridWebView = e.NewElement as HybridWebView;
-                hybridWebView.OnJavascriptInjectionRequest += this.OnJavascriptInjectionRequest;
+                hybridWebView.OnJavaScriptInjectionRequest += this.OnJavaScriptInjectionRequest;
                 this.Control.LoadRequest(new NSUrlRequest(new NSUrl(Element.Uri), NSUrlRequestCachePolicy.ReloadIgnoringCacheData, 10));
             }
         }
@@ -96,7 +96,7 @@ namespace Novellus.Mac
 
             if (!(sender is null))
             {
-                await this.OnJavascriptInjectionRequest(HybridWebView.GenerateFunctionScript(e));
+                await this.OnJavaScriptInjectionRequest(HybridWebView.GenerateFunctionScript(e));
             }
         }
     }

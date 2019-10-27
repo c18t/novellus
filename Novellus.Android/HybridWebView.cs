@@ -11,7 +11,7 @@ namespace Novellus.Droid
 
     public class HybridWebViewRenderer : ViewRenderer<HybridWebView, Android.Webkit.WebView>
     {
-        private JavascriptValueCallback callback;
+        private JavaScriptValueCallback callback;
         private Context context;
 
         public HybridWebViewRenderer(Context context) : base(context)
@@ -19,14 +19,13 @@ namespace Novellus.Droid
             this.context = context;
         }
 
-        internal async Task<string> OnJavascriptInjectionRequest(string js)
+        internal async Task<string> OnJavaScriptInjectionRequest(string js)
         {
             if (this.Element is null || this.Control is null)
             {
                 return string.Empty;
             }
 
-            // fire!
             this.callback.Reset();
 
             string response = string.Empty;
@@ -69,11 +68,11 @@ namespace Novellus.Droid
             if (this.Control is null)
             {
                 var webView = new Android.Webkit.WebView(this.context);
-                this.callback = new JavascriptValueCallback(this);
+                this.callback = new JavaScriptValueCallback(this);
 
                 webView.Settings.JavaScriptEnabled = true;
-                webView.AddJavascriptInterface(new JSBridge(this), "jsBridge");
-                webView.SetWebViewClient(new JavascriptWebViewClient(this));
+                webView.AddJavascriptInterface(new JSBridge(this), HybridWebView.AndroidJSBridgeName);
+                webView.SetWebViewClient(new JavaScriptWebViewClient(this));
 
                 HybridWebView.CallbackAdded += this.OnCallbackAdded;
 
@@ -82,31 +81,31 @@ namespace Novellus.Droid
 
             if (!(e.OldElement is null))
             {
-                this.Control.RemoveJavascriptInterface("jsBridge");
+                this.Control.RemoveJavascriptInterface(HybridWebView.JavaScriptMessageHandlerName);
                 var hybridWebView = e.OldElement as HybridWebView;
                 hybridWebView.RemoveAllActions();
-                hybridWebView.OnJavascriptInjectionRequest -= this.OnJavascriptInjectionRequest;
+                hybridWebView.OnJavaScriptInjectionRequest -= this.OnJavaScriptInjectionRequest;
             }
 
             if (!(e.NewElement is null))
             {
-                this.Control.AddJavascriptInterface(new JSBridge(this), "jsBridge");
+                this.Control.AddJavascriptInterface(new JSBridge(this), HybridWebView.JavaScriptMessageHandlerName);
                 var hybridWebView = e.NewElement as HybridWebView;
-                hybridWebView.OnJavascriptInjectionRequest += this.OnJavascriptInjectionRequest;
+                hybridWebView.OnJavaScriptInjectionRequest += this.OnJavaScriptInjectionRequest;
                 this.Control.LoadUrl(Element.Uri);
             }
         }
 
-        private async void OnCallbackAdded(object sender, string e)
+        private async void OnCallbackAdded(object sender, string name)
         {
-            if (this.Element is null || string.IsNullOrWhiteSpace(e))
+            if (this.Element is null || string.IsNullOrWhiteSpace(name))
             {
                 return;
             }
 
             if (!(sender is null))
             {
-                await this.OnJavascriptInjectionRequest(HybridWebView.GenerateFunctionScript(e));
+                await this.OnJavaScriptInjectionRequest(HybridWebView.GenerateFunctionScript(name));
             }
         }
     }

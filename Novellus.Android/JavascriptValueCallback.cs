@@ -3,11 +3,11 @@
     using System;
     using Android.Webkit;
 
-    public class JavascriptValueCallback : Java.Lang.Object, IValueCallback
+    public class JavaScriptValueCallback : Java.Lang.Object, IValueCallback
     {
         private readonly WeakReference<HybridWebViewRenderer> reference;
 
-        public JavascriptValueCallback(HybridWebViewRenderer renderer)
+        public JavaScriptValueCallback(HybridWebViewRenderer renderer)
         {
             this.reference = new WeakReference<HybridWebViewRenderer>(renderer);
         }

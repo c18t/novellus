@@ -4,11 +4,11 @@
     using Android.Webkit;
     using Novellus;
 
-    public class JavascriptWebViewClient : WebViewClient
+    public class JavaScriptWebViewClient : WebViewClient
     {
         private readonly WeakReference<HybridWebViewRenderer> reference;
 
-        public JavascriptWebViewClient(HybridWebViewRenderer　renderer)
+        public JavaScriptWebViewClient(HybridWebViewRenderer renderer)
         {
             this.reference = new WeakReference<HybridWebViewRenderer>(renderer);
         }
@@ -26,12 +26,12 @@
             }
 
             // Add Injection Function
-            await renderer.OnJavascriptInjectionRequest(HybridWebView.InjectedFunction);
+            await renderer.OnJavaScriptInjectionRequest(HybridWebView.InvokerFunctionScript);
 
             // Add Callbacks
             foreach (string actionName in renderer.Element.GetRegisteredActionNames())
             {
-                await renderer.OnJavascriptInjectionRequest(HybridWebView.GenerateFunctionScript(actionName));
+                await renderer.OnJavaScriptInjectionRequest(HybridWebView.GenerateFunctionScript(actionName));
             }
 
             base.OnPageFinished(view, url);

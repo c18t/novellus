@@ -29,13 +29,13 @@ namespace Novellus.UWP
             if (!(e.OldElement is null))
             {
                 var hybridWebView = e.OldElement as HybridWebView;
-                hybridWebView.OnJavascriptInjectionRequest -= this.OnJavascriptInjectionRequestAsync;
+                hybridWebView.OnJavaScriptInjectionRequest -= this.OnJavascriptInjectionRequestAsync;
             }
 
             if (!(e.NewElement is null))
             {
                 var hybridWebView = e.NewElement as HybridWebView;
-                hybridWebView.OnJavascriptInjectionRequest += this.OnJavascriptInjectionRequestAsync;
+                hybridWebView.OnJavaScriptInjectionRequest += this.OnJavascriptInjectionRequestAsync;
 
                 // Navigate
                 await WebView.ClearTemporaryWebDataAsync();
@@ -51,7 +51,7 @@ namespace Novellus.UWP
             }
 
             // Add Injection Function
-            await this.Control.InvokeScriptAsync("eval", new[] { HybridWebView.InjectedFunction });
+            await this.Control.InvokeScriptAsync("eval", new[] { HybridWebView.InvokerFunctionScript });
 
             // Add Callbacks
             foreach (string actionName in this.Element.GetRegisteredActionNames())

@@ -26,11 +26,11 @@
                 return;
             }
 
-            await renderer.OnJavascriptInjectionRequest(HybridWebView.InjectedFunction);
+            await renderer.OnJavaScriptInjectionRequest(HybridWebView.InvokerFunctionScript);
 
             foreach (string actionName in renderer.Element.GetRegisteredActionNames())
             {
-                await renderer.OnJavascriptInjectionRequest(HybridWebView.GenerateFunctionScript(actionName));
+                await renderer.OnJavaScriptInjectionRequest(HybridWebView.GenerateFunctionScript(actionName));
             }
         }
     }

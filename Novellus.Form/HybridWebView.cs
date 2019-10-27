@@ -2,6 +2,8 @@
 {
     using System;
     using System.Collections.Generic;
+    using System.Linq;
+    using System.Text.RegularExpressions;
     using System.Threading.Tasks;
     using Newtonsoft.Json;
     using Novellus.Models;
@@ -9,35 +11,58 @@
 
     public class HybridWebView : View, IDisposable
     {
+        public static readonly string InvokerFunctionName = "csharp";
+
+        public static readonly string EncoderFunctionName = "encodeURIComponent";
+
+        public static readonly string AndroidJSBridgeName = "jsBridge";
+
+        public const string JavaScriptMessageHandlerName = "invokeAction";
+
         public static readonly BindableProperty UriProperty = BindableProperty.Create(
-            propertyName: "Uri",
+            propertyName: nameof(Uri),
             returnType: typeof(string),
             declaringType: typeof(HybridWebView),
             defaultValue: default(string));
 
+        private const string FunctionIdentifierRegex = @"^[A-Za-z0-9$_]+$";
+
+        private static readonly string[] reservedFunctionNames = new string[]
+        {
+            InvokerFunctionName,
+            EncoderFunctionName,
+            AndroidJSBridgeName,
+            "await", "break", "case", "catch", "class", "const", "continue", "debugger",
+            "default", "delete", "do", "else", "enum", "export", "extends", "false",
+            "finally", "for", "function", "if", "implements", "import", "in", "instanceof",
+            "interface", "let", "new", "null", "package", "private", "protected", "public",
+            "return", "static", "super", "switch", "this", "throw", "true", "try", "typeof",
+            "var", "void", "while", "with", "yield",
+        };
+
         private readonly Dictionary<string, Action<string>> registeredCallbacks = new Dictionary<string, Action<string>>();
 
-        public delegate Task<string> JavascriptInjectionRequestDelegate(string js);
+        public delegate Task<string> JavaScriptInjectionRequestDelegate(string js);
 
         public static event EventHandler<string> CallbackAdded;
 
-        public event JavascriptInjectionRequestDelegate OnJavascriptInjectionRequest;
+        public event JavaScriptInjectionRequestDelegate OnJavaScriptInjectionRequest;
 
-        public static string InjectedFunction
+        public static string InvokerFunctionScript
         {
             get
             {
                 switch (Device.RuntimePlatform)
                 {
                     case Device.Android:
-                        return "function csharp(data){jsBridge.invokeAction(data);}";
+                        return $@"function {InvokerFunctionName}(data){{{AndroidJSBridgeName}.{JavaScriptMessageHandlerName}(data);}}";
 
                     case Device.iOS:
-                    case "macOS":
-                        return "function csharp(data){window.webkit.messageHandlers.invokeAction.postMessage(data);}";
+                    case Device.macOS:
+                        return $@"function {InvokerFunctionName}(data){{window.webkit.messageHandlers.{JavaScriptMessageHandlerName}.postMessage(data);}}";
 
                     default:
-                        return "function csharp(data){window.external.notify(data);}";
+                        return $@"function {InvokerFunctionName}(data){{window.external.notify(data);}}";
                 }
             }
         }
@@ -50,19 +75,29 @@
 
         public static string GenerateFunctionScript(string name)
         {
-            return $"function {name}(str){{csharp(\"{{'action':'{name}','data':'\"+encodeURIComponent(str)+\"'}}\");}}";
+            if (!Regex.IsMatch(name, FunctionIdentifierRegex))
+            {
+                throw new ArgumentException($"関数名は次のパターンに一致しなければなりません: /{FunctionIdentifierRegex}/", nameof(name));
+            }
+
+            if (reservedFunctionNames.Any(s => name == s))
+            {
+                throw new ArgumentException($"次の関数名は予約されています: {string.Join(", ", reservedFunctionNames.Select(s => $"'{s}'"))}", nameof(name));
+            }
+
+            return $@"function {name}(str){{{InvokerFunctionName}(""{{\""action\"":\""{name}\"",\""data\"":\""""+{EncoderFunctionName}(str)+""\""}}"");}}";
         }
 
-        public async Task<string> InjectJavascriptAsync(string js)
+        public async Task<string> InjectJavaScriptAsync(string js)
         {
             if (string.IsNullOrWhiteSpace(js))
             { 
                 return string.Empty;
             }
 
-            if (!(this.OnJavascriptInjectionRequest is null))
+            if (!(this.OnJavaScriptInjectionRequest is null))
             {
-                return await this.OnJavascriptInjectionRequest.Invoke(js);
+                return await this.OnJavaScriptInjectionRequest.Invoke(js);
             }
 
             return string.Empty;
@@ -122,9 +157,26 @@
             }
         }
 
+        #region IDisposable Support
+        private bool disposedValue = false;
+
+        protected virtual void Dispose(bool disposing)
+        {
+            if (!disposedValue)
+            {
+                if (disposing)
+                {
+                    this.registeredCallbacks.Clear();
+                }
+
+                disposedValue = true;
+            }
+        }
+
         public void Dispose()
         {
-            this.registeredCallbacks.Clear();
+            Dispose(true);
         }
+        #endregion
     }
 }
