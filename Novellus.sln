@@ -9,7 +9,7 @@ Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Novellus.Android", "Novellu
 EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Novellus.iOS", "Novellus.iOS\Novellus.iOS.csproj", "{53079E20-035C-4E4B-B63C-8065DCE33E5E}"
 EndProject
-Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Novellus.Form", "Novellus.Form\Novellus.Form.csproj", "{46640EFC-5D42-4794-AF9B-9F33B99EEC17}"
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Novellus.Form", "Novellus.Form\Novellus.Form.csproj", "{46640EFC-5D42-4794-AF9B-9F33B99EEC17}"
 EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Novellus.Mac", "Novellus.Mac\Novellus.Mac.csproj", "{5158B71C-1F6A-4889-9175-EBA00B209694}"
 EndProject
