@@ -1,0 +1,48 @@
+{
+  "project_info": {
+    "project_number": "435739869162",
+    "firebase_url": "https://org-chimata-novellus.firebaseio.com",
+    "project_id": "org-chimata-novellus",
+    "storage_bucket": "org-chimata-novellus.appspot.com"
+  },
+  "client": [
+    {
+      "client_info": {
+        "mobilesdk_app_id": "1:435739869162:android:87c5de604b6778132b3c93",
+        "android_client_info": {
+          "package_name": "org.chimata.novellus"
+        }
+      },
+      "oauth_client": [
+        {
+          "client_id": "435739869162-2jrpj0aarr5kno6b5kpl1rkd9db4jvno.apps.googleusercontent.com",
+          "client_type": 3
+        }
+      ],
+      "api_key": [
+        {
+          "current_key": "AIzaSyCFITwiQ0Vpl_KahitNGMUBFWnelqeplI0"
+        }
+      ],
+      "services": {
+        "appinvite_service": {
+          "other_platform_oauth_client": [
+            {
+              "client_id": "435739869162-2jrpj0aarr5kno6b5kpl1rkd9db4jvno.apps.googleusercontent.com",
+              "client_type": 3
+            },
+            {
+              "client_id": "435739869162-7gj7o8om6uaflc056g56lc9n54vanb0k.apps.googleusercontent.com",
+              "client_type": 2,
+              "ios_info": {
+                "bundle_id": "org.chimata.novellus",
+                "app_store_id": "1485237798"
+              }
+            }
+          ]
+        }
+      }
+    }
+  ],
+  "configuration_version": "1"
+}

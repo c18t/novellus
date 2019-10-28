@@ -25,16 +25,16 @@
 	<key>CFBundleDisplayName</key>
 	<string>Novellus</string>
 	<key>CFBundleIdentifier</key>
-	<string>org.chimata.Novellus</string>
+	<string>org.chimata.novellus</string>
 	<key>UILaunchStoryboardName</key>
 	<string>LaunchScreen</string>
-	<key>CFBundleName</key>
-	<string>Novellus</string>
 	<key>XSAppIconAssets</key>
 	<string>Assets.xcassets/AppIcon.appiconset</string>
 	<key>CFBundleShortVersionString</key>
 	<string>0.0.1</string>
+	<key>CFBundleName</key>
+	<string>ノベラス</string>
 	<key>CFBundleVersion</key>
-	<string>0.0.1</string>
+	<string>1</string>
 </dict>
 </plist>

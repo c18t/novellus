@@ -404,3 +404,5 @@ MigrationBackup/
 # End of https://www.gitignore.io/api/visualstudio,windows,macos
 
 StyleCop.Cache
+*.apk
+*.ipa
