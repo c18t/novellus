@@ -7,15 +7,15 @@
   IgnorableNamespaces="uap mp">
 
   <Identity
-    Name="0073bb59-4cc2-478f-9280-fc167edeb80a"
-    Publisher="CN=5bfb6ecb-5f35-461c-a336-cee961d0e2f8"
-    Version="1.0.0.0" />
+    Name="25469u.chimata.org.Novellus"
+    Publisher="CN=661DBBF3-5A50-464D-B73F-5252A38FD6C1"
+    Version="0.0.1.0" />
 
-  <mp:PhoneIdentity PhoneProductId="ec0cc741-fd3e-485c-81be-68815c480690" PhonePublisherId="00000000-0000-0000-0000-000000000000"/>
+  <mp:PhoneIdentity PhoneProductId="8e110703-a634-48f8-bf98-ce92de018656" PhonePublisherId="00000000-0000-0000-0000-000000000000"/>
 
   <Properties>
-    <DisplayName>Novellus.UWP</DisplayName>
-    <PublisherDisplayName>5bfb6ecb-5f35-461c-a336-cee961d0e2f8</PublisherDisplayName>
+    <DisplayName>Novellus</DisplayName>
+    <PublisherDisplayName>u.chimata.org</PublisherDisplayName>
     <Logo>Assets\StoreLogo.png</Logo>
   </Properties>
 
@@ -32,7 +32,7 @@
       Executable="$targetnametoken$.exe"
       EntryPoint="Novellus.UWP.App">
       <uap:VisualElements
-        DisplayName="Novellus.UWP"
+        DisplayName="ノベラス"
         Square150x150Logo="Assets\Square150x150Logo.png"
         Square44x44Logo="Assets\Square44x44Logo.png"
         Description="Novellus.UWP"
