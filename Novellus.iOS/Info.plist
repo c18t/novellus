@@ -21,7 +21,7 @@
 		<string>UIInterfaceOrientationLandscapeRight</string>
 	</array>
 	<key>MinimumOSVersion</key>
-	<string>12.2</string>
+	<string>12.4</string>
 	<key>CFBundleDisplayName</key>
 	<string>Novellus</string>
 	<key>CFBundleIdentifier</key>
