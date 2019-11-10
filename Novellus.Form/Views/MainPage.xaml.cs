@@ -19,6 +19,14 @@
             this.InitializeComponent();
         }
 
+        public void OpenUrl(string url)
+        {
+            if (!(url is null))
+            {
+                _ = this.hybridWebView.InjectJavaScriptAsync($"window.ShowNovel('{url}')");
+            }
+        }
+
         protected override void OnAppearing()
         {
             this.hybridWebView.RegisterAction(
@@ -48,7 +56,7 @@
                 {
                     FetchRequest req = JsonConvert.DeserializeObject<FetchRequest>(data);
 
-                    byte[] response = { };
+                    byte[] response = Array.Empty<byte>();
                     try
                     {
                         response = await this.httpClient.GetByteArrayAsync(req.Url);
